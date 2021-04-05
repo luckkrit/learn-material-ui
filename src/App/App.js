@@ -3,8 +3,7 @@ import SideNav from "../Components/SideNav";
 import styled from "@emotion/styled";
 import Header from "../Components/Header";
 import { createMuiTheme, CssBaseline, ThemeProvider } from "@material-ui/core";
-import PageHeader from "../Components/PageHeader";
-import { PeopleOutlineTwoTone } from "@material-ui/icons";
+import Employees from "../pages/Employees/Employees";
 
 const theme = createMuiTheme({
   palette: {
@@ -20,9 +19,9 @@ const theme = createMuiTheme({
       default: "#f4f5fd",
     },
   },
-  shape: {
-    borderRadius: "12px",
-  },
+  // shape: {
+  //   borderRadius: "12px",
+  // },
   overrides: {
     MuiAppBar: {
       root: {
@@ -30,11 +29,11 @@ const theme = createMuiTheme({
       },
     },
   },
-  props: {
-    MuiIconButton: {
-      disableRipple: true,
-    },
-  },
+  // props: {
+  //   MuiIconButton: {
+  //     disableRipple: true,
+  //   },
+  // },
 });
 function App() {
   const Content = styled.div`
@@ -47,11 +46,7 @@ function App() {
         <SideNav />
         <Content>
           <Header />
-          <PageHeader
-            title={"Page Header"}
-            subTitle={"Page description"}
-            icon={<PeopleOutlineTwoTone fontSize={"large"} />}
-          />
+          <Employees />
         </Content>
         <CssBaseline />
       </ThemeProvider>
