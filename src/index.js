@@ -7,9 +7,7 @@ import { StylesProvider } from "@material-ui/core/styles";
 
 ReactDOM.render(
   <StylesProvider injectFirst>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
+    <App />
   </StylesProvider>,
   document.getElementById("root")
 );

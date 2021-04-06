@@ -15,6 +15,7 @@ function RadioGroup(props) {
       <MuiRadioGroup row name={name} value={value} onChange={onChange}>
         {items.map((item) => (
           <FormControlLabel
+              key={item.id}
             value={item.id}
             control={<Radio />}
             label={item.title}
