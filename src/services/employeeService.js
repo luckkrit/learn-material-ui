@@ -41,5 +41,10 @@ export function getAllEmployees() {
   if (localStorage.getItem(KEYS.employees) === null) {
     localStorage.setItem(KEYS.employees, JSON.stringify([]));
   }
-  return JSON.parse(localStorage.getItem(KEYS.employees));
+  const employees = JSON.parse(localStorage.getItem(KEYS.employees));
+  const departments = getDepartmentCollection();
+  return employees.map((e) => {
+    const department = departments.find((d) => d.id === e.departmentId);
+    return { ...e, department: department ? department.title : "" };
+  });
 }

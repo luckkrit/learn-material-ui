@@ -59,7 +59,6 @@ function EmployeeForm(props) {
       employeeService.insertEmployee(values);
     }
   };
-  console.log(values);
   return (
     <Form onSubmit={(e) => handleSubmit(e)}>
       <Grid container>
