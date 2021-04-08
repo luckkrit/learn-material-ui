@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function useTable(records, headCells) {
+function useTable(records, headCells, filterFn) {
   const classes = useStyles();
   const pages = [5, 10, 25];
   const [page, setPage] = useState(0);
@@ -110,17 +110,17 @@ function useTable(records, headCells) {
     }
     return 0;
   };
-  const recordsAfterPages = () => {
-    return stableSort(records, getComparator(order, orderBy)).slice(
-      page * rowsPerPage,
-      (page + 1) * rowsPerPage
-    );
+  const recordsAfterPagesAndSorting = () => {
+    return stableSort(
+      filterFn.fn(records),
+      getComparator(order, orderBy)
+    ).slice(page * rowsPerPage, (page + 1) * rowsPerPage);
   };
   return {
     TblHead,
     TblContainer,
     TblPagination,
-    recordsAfterPages,
+    recordsAfterPagesAndSorting,
   };
 }
 

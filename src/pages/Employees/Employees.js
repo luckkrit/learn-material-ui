@@ -1,21 +1,27 @@
 import React, { useState } from "react";
 import EmployeeForm from "./EmployeeForm";
 import PageHeader from "../../Components/PageHeader";
-import { PeopleOutlineTwoTone } from "@material-ui/icons";
+import { PeopleOutlineTwoTone, Search } from "@material-ui/icons";
 import {
+  InputAdornment,
   makeStyles,
   Paper,
   TableBody,
   TableCell,
   TableRow,
+  Toolbar,
 } from "@material-ui/core";
 import useTable from "../../Components/useTable";
 import * as employeeService from "../../services/employeeService";
+import Controls from "../../Components/controls/Controls";
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
     margin: theme.spacing(5),
     padding: theme.spacing(3),
+  },
+  searchInput: {
+    width: "75%",
   },
 }));
 
@@ -28,14 +34,31 @@ const headCells = [
 function Employees(props) {
   const classes = useStyles();
   const employees = employeeService.getAllEmployees();
+  const [filterFn, setFilterFn] = useState({ fn: (items) => items });
   // const employee2 = employees[0];
   // employee2.fullName = "Jib";
   // employeeService.insertEmployee(employee2);
   const [records] = useState(employees);
-  const { TblContainer, TblHead, TblPagination, recordsAfterPages } = useTable(
-    records,
-    headCells
-  );
+  const {
+    TblContainer,
+    TblHead,
+    TblPagination,
+    recordsAfterPagesAndSorting,
+  } = useTable(records, headCells, filterFn);
+  const handleSearch = (e) => {
+    let target = e.target;
+    setFilterFn({
+      fn: (items) => {
+        if (target.value === "") {
+          return items;
+        } else {
+          return items.filter((x) =>
+            x.fullName.toLowerCase().includes(e.target.value)
+          );
+        }
+      },
+    });
+  };
   return (
     <>
       <PageHeader
@@ -45,10 +68,24 @@ function Employees(props) {
       />
       <Paper className={classes.pageContent}>
         {/*<EmployeeForm />*/}
+        <Toolbar>
+          <Controls.Input
+            label={"Search Employee"}
+            className={classes.searchInput}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              ),
+            }}
+            onChange={handleSearch}
+          />
+        </Toolbar>
         <TblContainer>
           <TblHead />
           <TableBody>
-            {recordsAfterPages().map((item) => (
+            {recordsAfterPagesAndSorting().map((item) => (
               <TableRow key={item.id}>
                 <TableCell>{item.fullName}</TableCell>
                 <TableCell>{item.email}</TableCell>
