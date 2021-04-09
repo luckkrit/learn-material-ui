@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import EmployeeForm from "./EmployeeForm";
 import PageHeader from "../../Components/PageHeader";
-import { PeopleOutlineTwoTone, Search } from "@material-ui/icons";
+import {
+  Add,
+  Close,
+  EditOutlined,
+  PeopleOutlineTwoTone,
+  Search,
+} from "@material-ui/icons";
 import {
   InputAdornment,
   makeStyles,
@@ -14,6 +20,7 @@ import {
 import useTable from "../../Components/useTable";
 import * as employeeService from "../../services/employeeService";
 import Controls from "../../Components/controls/Controls";
+import Popup from "../../Components/Popup";
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -23,22 +30,29 @@ const useStyles = makeStyles((theme) => ({
   searchInput: {
     width: "75%",
   },
+  newButton: {
+    position: "absolute",
+    right: "10px",
+  },
 }));
 
 const headCells = [
   { id: "fullName", label: "Employee Name" },
   { id: "email", label: "Email" },
   { id: "mobile", label: "Mobile" },
-  { id: "department", label: "Department", disableSorting: true },
+  { id: "department", label: "Department" },
+  { id: "actions'", label: "Actions", disableSorting: true },
 ];
 function Employees(props) {
   const classes = useStyles();
+  const [recordForEdit, setRecordForEdit] = useState(null);
   const employees = employeeService.getAllEmployees();
   const [filterFn, setFilterFn] = useState({ fn: (items) => items });
+  const [openPopup, setOpenPopup] = useState(false);
   // const employee2 = employees[0];
   // employee2.fullName = "Jib";
   // employeeService.insertEmployee(employee2);
-  const [records] = useState(employees);
+  const [records, setRecords] = useState(employees);
   const {
     TblContainer,
     TblHead,
@@ -58,6 +72,21 @@ function Employees(props) {
         }
       },
     });
+  };
+  const addOrEdit = (employee, resetForm) => {
+    if (employee.id === 0) {
+      employeeService.insertEmployee(employee);
+    } else {
+      employeeService.updateEmployee(employee);
+    }
+    resetForm();
+    setRecordForEdit(null);
+    setOpenPopup(false);
+    setRecords(employeeService.getAllEmployees());
+  };
+  const openInPopup = (item) => {
+    setRecordForEdit(item);
+    setOpenPopup(true);
   };
   return (
     <>
@@ -81,6 +110,16 @@ function Employees(props) {
             }}
             onChange={handleSearch}
           />
+          <Controls.Button
+            className={classes.newButton}
+            text={"Add New"}
+            variant={"outlined"}
+            startIcon={<Add />}
+            onClick={() => {
+              setOpenPopup(true);
+              setRecordForEdit(null);
+            }}
+          />
         </Toolbar>
         <TblContainer>
           <TblHead />
@@ -91,12 +130,32 @@ function Employees(props) {
                 <TableCell>{item.email}</TableCell>
                 <TableCell>{item.mobile}</TableCell>
                 <TableCell>{item.department}</TableCell>
+                <TableCell>
+                  <Controls.ActionButton
+                    color={"primary"}
+                    onClick={() => {
+                      openInPopup(item);
+                    }}
+                  >
+                    <EditOutlined fontSize={"small"} />
+                  </Controls.ActionButton>
+                  <Controls.ActionButton color={"secondary"}>
+                    <Close fontSize={"small"} />
+                  </Controls.ActionButton>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </TblContainer>
         <TblPagination />
       </Paper>
+      <Popup
+        title={"Employee Form"}
+        openPopup={openPopup}
+        setOpenPopup={setOpenPopup}
+      >
+        <EmployeeForm addOrEdit={addOrEdit} recordForEdit={recordForEdit} />
+      </Popup>
     </>
   );
 }

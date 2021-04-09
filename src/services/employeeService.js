@@ -28,6 +28,12 @@ export function insertEmployee(data) {
   employees.push(data);
   localStorage.setItem(KEYS.employees, JSON.stringify(employees));
 }
+export function updateEmployee(employee) {
+  let employees = getAllEmployees();
+  let recordIndex = employees.findIndex((x) => x.id === employee.id);
+  employees[recordIndex] = { ...employee };
+  localStorage.setItem(KEYS.employees, JSON.stringify(employees));
+}
 
 export function generateEmployeeId() {
   if (localStorage.getItem(KEYS.employeeId) === null) {
