@@ -21,6 +21,7 @@ import useTable from "../../Components/useTable";
 import * as employeeService from "../../services/employeeService";
 import Controls from "../../Components/controls/Controls";
 import Popup from "../../Components/Popup";
+import Notification from "../../Components/Notification";
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -49,6 +50,11 @@ function Employees(props) {
   const employees = employeeService.getAllEmployees();
   const [filterFn, setFilterFn] = useState({ fn: (items) => items });
   const [openPopup, setOpenPopup] = useState(false);
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
   // const employee2 = employees[0];
   // employee2.fullName = "Jib";
   // employeeService.insertEmployee(employee2);
@@ -83,6 +89,11 @@ function Employees(props) {
     setRecordForEdit(null);
     setOpenPopup(false);
     setRecords(employeeService.getAllEmployees());
+    setNotify({
+      isOpen: true,
+      message: "Submitted successfully",
+      type: "success",
+    });
   };
   const openInPopup = (item) => {
     setRecordForEdit(item);
@@ -156,6 +167,7 @@ function Employees(props) {
       >
         <EmployeeForm addOrEdit={addOrEdit} recordForEdit={recordForEdit} />
       </Popup>
+      <Notification notify={notify} setNotify={setNotify} />
     </>
   );
 }
